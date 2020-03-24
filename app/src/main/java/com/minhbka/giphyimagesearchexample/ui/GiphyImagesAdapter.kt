@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.minhbka.giphyimagesearchexample.R
+import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
 import com.minhbka.giphyimagesearchexample.databinding.RecycleviewImageBinding
-import com.minhbka.giphyimagesearchexample.network.responses.ImageObject
 
 class GiphyImagesAdapter(
-    private val images:List<ImageObject>
+    private val images:List<GiphyImage>
 ):RecyclerView.Adapter<GiphyImagesAdapter.ImagesViewHolder>(){
 
 

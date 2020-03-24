@@ -5,7 +5,7 @@
     <data>
         <import type="android.view.View"/>
         <variable name="image"
-                  type="com.minhbka.giphyimagesearchexample.network.responses.ImageObject"/>
+                  type="com.minhbka.giphyimagesearchexample.data.entities.GiphyImage"/>
     </data>
 <LinearLayout
               android:layout_width="match_parent"
@@ -23,27 +23,32 @@
                     android:layout_height="195dp">
                 <ImageView
 
-                    app:image="@{image.url}"
+                    app:image="@{image.image_url}"
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:scaleType="fitXY"
                     android:layout_height="195dp"
 
                 />
+                <View
+                        android:background="@drawable/gradient_background"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"/>
                 <ImageView
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
-                        android:paddingLeft="12dp"
-                        android:paddingRight="12dp"
+
                         android:layout_margin="15dp"
                         android:layout_alignParentBottom="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="6dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="6dp"
                         android:layout_marginTop="3dp"
                         android:id="@+id/imageViewLike"
                         android:background="@drawable/ic_like"
-                        android:layout_width="15dp"
-                        android:layout_height="14dp"/>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
             </RelativeLayout>
 
         </LinearLayout>
