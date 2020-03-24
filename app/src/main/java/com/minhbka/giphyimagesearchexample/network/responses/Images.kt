@@ -33,9 +33,6 @@ data class Images(
     val fixedWidthSmallStill: ImageObject,
     @SerializedName("fixed_width_still")
     val fixedWidthStill: ImageObject,
-    val preview: ImageObject,
-    @SerializedName("preview_gif")
-    val previewGif: ImageObject,
-    @SerializedName("preview_webp")
-    val previewWebp: ImageObject
+    val original: ImageObject
+
 )

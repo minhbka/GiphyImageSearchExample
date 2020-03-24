@@ -1,6 +1,7 @@
 package com.minhbka.giphyimagesearchexample.network
 
 import com.minhbka.giphyimagesearchexample.network.responses.GiphyResponse
+import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,8 +21,15 @@ interface GiphyApi {
     ) : Response<GiphyResponse>
 
     companion object{
-        operator fun invoke():GiphyApi{
+        operator fun invoke(
+            networkConnectionInterceptor: NetworkConnectionInterceptor
+        ):GiphyApi{
+            val okHttpClient = OkHttpClient.Builder()
+                .addInterceptor(networkConnectionInterceptor)
+                .build()
+
             return Retrofit.Builder()
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(BASE_URL)
                 .build()

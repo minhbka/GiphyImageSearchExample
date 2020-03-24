@@ -1,6 +1,6 @@
 package com.minhbka.giphyimagesearchexample.network.responses
 
-class ImageObject (
+data class ImageObject (
     val height: String,
     val mp4: String?,
     val mp4_size: String?,
