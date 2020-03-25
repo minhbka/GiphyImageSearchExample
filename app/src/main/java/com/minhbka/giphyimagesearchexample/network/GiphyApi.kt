@@ -16,7 +16,7 @@ interface GiphyApi {
     suspend fun getSearch(
         @Query("api_key")apiKey:String = API_KEY,
         @Query("q") query: String,
-        @Query("limit") limit: Int? = 5,
+        @Query("limit") limit: Int? = 20,
         @Query("offset") offset: Int?
     ) : Response<GiphyResponse>
 

@@ -19,13 +19,19 @@ import com.minhbka.giphyimagesearchexample.utils.snackbar
 import com.minhbka.giphyimagesearchexample.utils.toast
 import kotlinx.android.synthetic.main.fragment_search.*
 
+import org.kodein.di.android.x.kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.generic.instance
+
 /**
  * A simple [Fragment] subclass.
  *
  */
-class SearchFragment : Fragment(), GiphyListener {
+class SearchFragment : Fragment(), GiphyListener, KodeinAware {
 
-    private lateinit var factory: GiphyViewModelFactory
+    override val kodein by kodein()
+    private val factory : GiphyViewModelFactory by instance()
+
     private lateinit var viewModel: GiphyViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,13 +43,11 @@ class SearchFragment : Fragment(), GiphyListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val networkConnectionInterceptor = NetworkConnectionInterceptor(requireContext())
-        val api = GiphyApi(networkConnectionInterceptor)
-        val repository = GiphyRepository(api)
-        factory = GiphyViewModelFactory(repository)
+
         viewModel = ViewModelProviders.of(this, factory).get(GiphyViewModel::class.java)
         viewModel.giphyListener = this
         viewModel.getSearchImage()
+        viewModel.getFavorImage()
         viewModel.images.observe(viewLifecycleOwner, Observer {images->
             recycle_view_images.also {
                 it.layoutManager = LinearLayoutManager(requireContext())
