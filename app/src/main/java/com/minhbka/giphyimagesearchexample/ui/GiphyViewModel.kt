@@ -1,17 +1,15 @@
 package com.minhbka.giphyimagesearchexample.ui
 
-import android.util.Log
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
-import com.minhbka.giphyimagesearchexample.network.responses.GiphyResponse
 import com.minhbka.giphyimagesearchexample.repository.GiphyRepository
 import com.minhbka.giphyimagesearchexample.utils.ApiException
 import com.minhbka.giphyimagesearchexample.utils.Coroutines
 import com.minhbka.giphyimagesearchexample.utils.NoInternetException
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
+
 const val  STATUS_OK_CODE = 200
 class GiphyViewModel(
     private val repository: GiphyRepository

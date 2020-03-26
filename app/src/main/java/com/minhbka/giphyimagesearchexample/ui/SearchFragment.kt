@@ -2,7 +2,6 @@ package com.minhbka.giphyimagesearchexample.ui
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,17 +11,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minhbka.giphyimagesearchexample.R
 import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
-import com.minhbka.giphyimagesearchexample.network.GiphyApi
-import com.minhbka.giphyimagesearchexample.network.NetworkConnectionInterceptor
-import com.minhbka.giphyimagesearchexample.repository.GiphyRepository
 import com.minhbka.giphyimagesearchexample.utils.hide
 import com.minhbka.giphyimagesearchexample.utils.show
 import com.minhbka.giphyimagesearchexample.utils.snackbar
 import com.minhbka.giphyimagesearchexample.utils.toast
 import kotlinx.android.synthetic.main.fragment_search.*
-
-import org.kodein.di.android.x.kodein
 import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
 
 /**
@@ -49,7 +44,7 @@ class SearchFragment : Fragment(), GiphyListener, RecycleViewClickListener, Kode
         viewModel = ViewModelProviders.of(this, factory).get(GiphyViewModel::class.java)
         viewModel.giphyListener = this
         viewModel.getSearchImage()
-        viewModel.getFavorImage()
+
         val adapter = GiphyImagesAdapter(this)
         recycle_view_images.also {
             it.layoutManager = LinearLayoutManager(requireContext())
@@ -64,9 +59,6 @@ class SearchFragment : Fragment(), GiphyListener, RecycleViewClickListener, Kode
             }
         })
 
-        viewModel.favorImages.observe(this, Observer {images->
-            Log.d("DEBUG", "Favor images: $images")
-        })
 
     }
 
@@ -90,7 +82,6 @@ class SearchFragment : Fragment(), GiphyListener, RecycleViewClickListener, Kode
     override fun onRecyclerViewItemClick(view: View, image: GiphyImage) {
         when(view.id){
             R.id.imageViewFavor ->{
-                activity!!.toast("Image ${image.id} is clicked")
                 viewModel.onFavoriteButtonClick(image)
             }
         }
