@@ -1,5 +1,6 @@
 package com.minhbka.giphyimagesearchexample.network
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.minhbka.giphyimagesearchexample.network.responses.GiphyResponse
 import okhttp3.OkHttpClient
 import retrofit2.Response
@@ -15,8 +16,8 @@ interface GiphyApi {
     @GET("search")
     suspend fun getSearch(
         @Query("api_key")apiKey:String = API_KEY,
-        @Query("q") query: String,
-        @Query("limit") limit: Int? = 20,
+        @Query("q") query: String = "cherry blossom",
+        @Query("limit") limit: Int? = 10,
         @Query("offset") offset: Int?
     ) : Response<GiphyResponse>
 
@@ -31,6 +32,7 @@ interface GiphyApi {
             return Retrofit.Builder()
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .baseUrl(BASE_URL)
                 .build()
                 .create(GiphyApi::class.java)

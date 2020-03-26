@@ -4,6 +4,10 @@
           android:icon="@drawable/ic_search"
           android:title="Search"/>
 
+    <item android:id="@+id/searchPaginationFragment"
+          android:icon="@drawable/ic_search"
+          android:title="SearchPagination"/>
+
     <item android:id="@+id/favoriteFragment"
           android:icon="@drawable/ic_favorite"
           android:title="Favorite"/>

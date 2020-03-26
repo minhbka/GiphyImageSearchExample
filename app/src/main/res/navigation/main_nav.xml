@@ -6,11 +6,14 @@
             app:startDestination="@id/searchFragment">
 
     <fragment android:id="@+id/searchFragment"
-              android:name="com.minhbka.giphyimagesearchexample.ui.SearchFragment"
+              android:name="com.minhbka.giphyimagesearchexample.ui.search.SearchFragment"
               android:label="Search"
               tools:layout="@layout/fragment_search"/>
     <fragment android:id="@+id/favoriteFragment"
-              android:name="com.minhbka.giphyimagesearchexample.ui.FavoriteFragment"
+              android:name="com.minhbka.giphyimagesearchexample.ui.favorite.FavoriteFragment"
               android:label="Favorite"
               tools:layout="@layout/fragment_favorite"/>
+    <fragment android:id="@+id/searchPaginationFragment"
+              android:name="com.minhbka.giphyimagesearchexample.ui.search.SearchPaginationFragment"
+              android:label="SearchPagination" tools:layout="@layout/search_pagination_fragment"/>
 </navigation>
