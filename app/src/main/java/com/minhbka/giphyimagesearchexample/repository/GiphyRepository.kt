@@ -16,14 +16,27 @@ import kotlinx.coroutines.withContext
 class GiphyRepository (
     private val api:GiphyApi,
     private val db:AppDatabase
-
-
 ):SafeApiRequest(){
 
     suspend fun getSearchGiphyImage()= apiRequest {api.getSearch(query = "cherry blossom", offset = 0)}
-    suspend fun getFavorGiphyImage(): LiveData<List<GiphyImage>>{
-        return withContext(Dispatchers.IO){
-            db.getFavorGiphyImageDao().getAllFavorImage()
+
+
+
+    fun getFavorGiphyImage(): LiveData<List<GiphyImage>> = db.getFavorGiphyImageDao().getAllFavorImage()
+
+    fun getFavorGiphyImageById(id:String) = db.getFavorGiphyImageDao().getFavorImgById(id)
+
+
+    fun saveFavorGiphyImage(giphyImage: GiphyImage){
+        Coroutines.io {
+            db.getFavorGiphyImageDao().insert(giphyImage)
         }
     }
+
+    fun deleteFavorGiphyImage(giphyImage: GiphyImage){
+        Coroutines.io {
+            db.getFavorGiphyImageDao().deleteFavorImgById(giphyImage.id)
+        }
+    }
+
 }

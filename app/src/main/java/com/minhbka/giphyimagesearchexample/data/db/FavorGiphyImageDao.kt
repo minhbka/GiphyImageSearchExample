@@ -19,5 +19,7 @@ interface FavorGiphyImageDao {
     @Query("Select * from favor_images")
     fun getAllFavorImage() : LiveData<List<GiphyImage>>
 
+    @Query("Select * from favor_images Where id= :id")
+    fun getFavorImgById(id: String): GiphyImage?
 
 }

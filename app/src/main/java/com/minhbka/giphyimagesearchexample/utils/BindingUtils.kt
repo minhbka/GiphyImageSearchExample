@@ -11,3 +11,8 @@ fun loadImage(view:ImageView, url:String){
         .load(url)
         .into(view)
 }
+
+@BindingAdapter("selected")
+fun setFavorImage(view:ImageView, is_favorite:Boolean){
+    view.isSelected = is_favorite
+}

@@ -2,6 +2,7 @@ package com.minhbka.giphyimagesearchexample.ui
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minhbka.giphyimagesearchexample.R
+import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
 import com.minhbka.giphyimagesearchexample.network.GiphyApi
 import com.minhbka.giphyimagesearchexample.network.NetworkConnectionInterceptor
 import com.minhbka.giphyimagesearchexample.repository.GiphyRepository
@@ -27,7 +29,7 @@ import org.kodein.di.generic.instance
  * A simple [Fragment] subclass.
  *
  */
-class SearchFragment : Fragment(), GiphyListener, KodeinAware {
+class SearchFragment : Fragment(), GiphyListener, RecycleViewClickListener, KodeinAware {
 
     override val kodein by kodein()
     private val factory : GiphyViewModelFactory by instance()
@@ -48,14 +50,24 @@ class SearchFragment : Fragment(), GiphyListener, KodeinAware {
         viewModel.giphyListener = this
         viewModel.getSearchImage()
         viewModel.getFavorImage()
-        viewModel.images.observe(viewLifecycleOwner, Observer {images->
-            recycle_view_images.also {
-                it.layoutManager = LinearLayoutManager(requireContext())
-                it.setHasFixedSize(true)
-                it.adapter = GiphyImagesAdapter(images)
-            }
+        val adapter = GiphyImagesAdapter(this)
+        recycle_view_images.also {
+            it.layoutManager = LinearLayoutManager(requireContext())
+            it.setHasFixedSize(true)
+            it.adapter = adapter
+        }
 
+        viewModel.images.observe(this, Observer {images->
+
+            images?.let {
+                adapter.submitList(images)
+            }
         })
+
+        viewModel.favorImages.observe(this, Observer {images->
+            Log.d("DEBUG", "Favor images: $images")
+        })
+
     }
 
     override fun onStarted() {
@@ -74,5 +86,16 @@ class SearchFragment : Fragment(), GiphyListener, KodeinAware {
         root_layout.snackbar(message)
 
     }
+
+    override fun onRecyclerViewItemClick(view: View, image: GiphyImage) {
+        when(view.id){
+            R.id.imageViewFavor ->{
+                activity!!.toast("Image ${image.id} is clicked")
+                viewModel.onFavoriteButtonClick(image)
+            }
+        }
+
+    }
+
 
 }

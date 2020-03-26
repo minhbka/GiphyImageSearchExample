@@ -11,4 +11,9 @@ data class GiphyImage (
     val id:String,
     var image_url : String,
     var is_favourite : Boolean
-)
+
+){
+    override fun toString(): String {
+        return "Image: $id, $image_url, $is_favourite"
+    }
+}
