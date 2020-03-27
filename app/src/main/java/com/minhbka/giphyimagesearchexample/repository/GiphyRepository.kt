@@ -2,6 +2,7 @@ package com.minhbka.giphyimagesearchexample.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.room.Query
 import com.minhbka.giphyimagesearchexample.data.db.AppDatabase
 import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
 import com.minhbka.giphyimagesearchexample.network.GiphyApi
@@ -18,7 +19,7 @@ class GiphyRepository (
     private val db:AppDatabase
 ):SafeApiRequest(){
 
-    suspend fun getSearchGiphyImage()= apiRequest {api.getSearch(query = "cherry blossom", offset = 0)}
+    suspend fun getSearchGiphyImage(query: String, limit:Int, offset :Int)= apiRequest {api.getSearch(query = query, limit = limit, offset = offset)}
 
 
 

@@ -24,6 +24,6 @@ class MyApplication : Application(), KodeinAware{
         bind() from singleton { GiphyRepository(instance(), instance()) }
         bind() from provider { GiphyViewModelFactory(instance()) }
 
-        bind() from provider { SearchPaginationViewModelFactory(instance(), instance()) }
+        bind() from provider { SearchPaginationViewModelFactory(instance()) }
     }
 }

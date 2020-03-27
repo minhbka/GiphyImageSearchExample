@@ -3,6 +3,7 @@ package com.minhbka.giphyimagesearchexample.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.viewpager2.widget.ViewPager2
 import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
 import com.minhbka.giphyimagesearchexample.repository.GiphyRepository
 import com.minhbka.giphyimagesearchexample.utils.ApiException
@@ -26,12 +27,12 @@ class GiphyViewModel(
     val favorImages : LiveData<List<GiphyImage>>
         get() = getFavorImage()
 
-    fun getSearchImage(){
+    fun getSearchImage(query:String = "cherry blossom", limit: Int = 10, offset:Int = 0){
         giphyListener?.onStarted()
 
         jobSearch = Coroutines.io{
             try {
-                val searchResult = repository.getSearchGiphyImage()
+                val searchResult = repository.getSearchGiphyImage(query, limit, offset)
                 if (searchResult.meta.status == STATUS_OK_CODE){
                     val listImage = searchResult.data.map {
                         GiphyImage(it.id, it.images.original.url, repository.getFavorGiphyImageById(it.id) != null)
