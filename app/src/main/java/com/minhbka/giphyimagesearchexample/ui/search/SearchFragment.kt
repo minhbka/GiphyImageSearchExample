@@ -2,6 +2,7 @@ package com.minhbka.giphyimagesearchexample.ui.search
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,7 +58,8 @@ class SearchFragment : Fragment(), GiphyListener,
         viewModel.images.observe(this, Observer {images->
 
             images?.let {
-                adapter.submitList(images)
+                Log.d("DEBUG", "On data change")
+                adapter.submitList(images.toMutableList())
             }
         })
 
@@ -84,6 +86,7 @@ class SearchFragment : Fragment(), GiphyListener,
     override fun onRecyclerViewItemClick(view: View, image: GiphyImage) {
         when(view.id){
             R.id.imageViewFavor ->{
+                view.isSelected =! view.isSelected
                 viewModel.onFavoriteButtonClick(image)
             }
         }

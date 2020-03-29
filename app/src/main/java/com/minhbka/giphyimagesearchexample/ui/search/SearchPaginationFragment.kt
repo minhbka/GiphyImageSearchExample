@@ -51,9 +51,10 @@ class SearchPaginationFragment : Fragment(), KodeinAware, RecycleViewClickListen
         viewModel.getGiphyImagesLiveData()
         viewModel.getProgressLoadStatus()
         viewModel.getGiphyImagesLiveData().observe(this, Observer {
-            Log.d("DEBUG", "Data: ${it.size}")
+            it?.let {
+                adapter.submitList(it)
+            }
 
-            adapter.submitList(it)
         })
 
         viewModel.getProgressLoadStatus().observe(this, Observer {
@@ -67,6 +68,7 @@ class SearchPaginationFragment : Fragment(), KodeinAware, RecycleViewClickListen
     override fun onRecyclerViewItemClick(view: View, image: GiphyImage) {
         when(view.id){
             R.id.imageViewFavor ->{
+                view.isSelected = !view.isSelected
                 viewModel.onFavoriteButtonClick(image)
             }
         }

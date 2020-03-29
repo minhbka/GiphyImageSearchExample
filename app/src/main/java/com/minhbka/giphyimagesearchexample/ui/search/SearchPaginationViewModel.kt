@@ -1,6 +1,5 @@
 package com.minhbka.giphyimagesearchexample.ui.search
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -9,7 +8,6 @@ import androidx.paging.DataSource
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
-import com.minhbka.giphyimagesearchexample.repository.GiphyDataFactory
 import com.minhbka.giphyimagesearchexample.repository.GiphyImagesDataSource
 import com.minhbka.giphyimagesearchexample.repository.GiphyRepository
 import kotlinx.coroutines.CoroutineScope
@@ -69,8 +67,6 @@ class SearchPaginationViewModel(
 
         }
 
-
-
         return LivePagedListBuilder(dataSource, config).build()
     }
 
@@ -100,10 +96,9 @@ class SearchPaginationViewModel(
     }
 
     companion object {
-        const val SEARCH_RESULT_LIMIT = 10
-
-        private const val QUERY_DEBOUNCE = 100L
-        private const val PREFETCH_DISTANCE = 5
+        const val SEARCH_RESULT_LIMIT = 20
+        private const val QUERY_DEBOUNCE = 200L
+        private const val PREFETCH_DISTANCE = 10
     }
 
 }

@@ -1,6 +1,7 @@
 package com.minhbka.giphyimagesearchexample.ui.favorite
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minhbka.giphyimagesearchexample.R
 import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
 import com.minhbka.giphyimagesearchexample.ui.*
-import com.minhbka.giphyimagesearchexample.utils.hide
-import com.minhbka.giphyimagesearchexample.utils.show
-import com.minhbka.giphyimagesearchexample.utils.snackbar
-import com.minhbka.giphyimagesearchexample.utils.toast
+import com.minhbka.giphyimagesearchexample.utils.*
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
@@ -47,10 +45,10 @@ class FavoriteFragment : Fragment(), GiphyListener,
             it.adapter = adapter
         }
 
-        viewModel.favorImages.observe(this, Observer {images->
-
+        viewModel.favorImages.observeOnce(this, Observer {images->
+            Log.d("DEBUG", "On data change")
             images?.let {
-                adapter.submitList(images)
+                adapter.submitList(images.toMutableList())
             }
         })
 
@@ -75,6 +73,7 @@ class FavoriteFragment : Fragment(), GiphyListener,
     override fun onRecyclerViewItemClick(view: View, image: GiphyImage) {
         when(view.id){
             R.id.imageViewFavor ->{
+                view.isSelected = !view.isSelected
                 viewModel.onFavoriteButtonClick(image)
             }
         }

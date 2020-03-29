@@ -1,12 +1,11 @@
 package com.minhbka.giphyimagesearchexample.ui
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.minhbka.giphyimagesearchexample.R
 import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
 import com.minhbka.giphyimagesearchexample.databinding.RecycleviewImageBinding
@@ -44,10 +43,10 @@ class GiphyImagesAdapter(private val listener: RecycleViewClickListener? = null)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is GiphyImageViewHolder -> {
-                holder.recycleviewImageBinding.image = differ.currentList[position]
+                holder.recycleviewImageBinding.image = differ.currentList[holder.adapterPosition]
                 holder.recycleviewImageBinding.imageViewFavor.setOnClickListener {
                     listener?.onRecyclerViewItemClick(holder.recycleviewImageBinding.imageViewFavor,
-                        differ.currentList[position]
+                        differ.currentList[holder.adapterPosition]
                     )
                 }
 
@@ -59,9 +58,8 @@ class GiphyImagesAdapter(private val listener: RecycleViewClickListener? = null)
         return differ.currentList.size
     }
 
-    fun submitList(list: List<GiphyImage>) {
-        differ.submitList(list)
-        notifyDataSetChanged()
+    fun submitList(list: List<GiphyImage>?) {
+        differ.submitList(list?.let { ArrayList(it) })
     }
 
     class GiphyImageViewHolder(
@@ -69,5 +67,3 @@ class GiphyImagesAdapter(private val listener: RecycleViewClickListener? = null)
     ) : RecyclerView.ViewHolder(recycleviewImageBinding.root)
 
 }
-
-

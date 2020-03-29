@@ -29,13 +29,14 @@ class GiphyImagesDataSource(
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, GiphyImage>) {
         (scope + job).launch {
             try {
+
                 val response = repository.getSearchGiphyImage(query = query, limit = params.requestedLoadSize, offset = 0)
 
                 val data = response.data
                 val searchResult = data.map {
                     GiphyImage(it.id, it.images.original.url, repository.getFavorGiphyImageById(it.id) != null)
                 }
-                callback.onResult(searchResult, response.pagination.offset,response.pagination.totalCount)
+                callback.onResult(searchResult, null, response.pagination.offset+params.requestedLoadSize)
             }
             catch (e: ApiException){
                 _progressLiveStatus.postValue(e.message)
@@ -53,6 +54,7 @@ class GiphyImagesDataSource(
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, GiphyImage>) {
         (scope + job).launch {
             try {
+
                 val response =
                     repository.getSearchGiphyImage(query = query, limit = params.requestedLoadSize, offset = params.key)
 
@@ -65,7 +67,7 @@ class GiphyImagesDataSource(
                         repository.getFavorGiphyImageById(it.id) != null
                     )
                 }
-                callback.onResult(searchResult, response.pagination.offset)
+                callback.onResult(searchResult, response.pagination.offset+params.requestedLoadSize)
             }
             catch (e: ApiException){
                 Log.d("DEBUG", "loadAfter Exception: ${e.message}")
