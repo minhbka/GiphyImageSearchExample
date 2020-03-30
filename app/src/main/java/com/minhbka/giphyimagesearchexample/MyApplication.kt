@@ -5,8 +5,8 @@ import com.minhbka.giphyimagesearchexample.data.db.AppDatabase
 import com.minhbka.giphyimagesearchexample.network.GiphyApi
 import com.minhbka.giphyimagesearchexample.network.NetworkConnectionInterceptor
 import com.minhbka.giphyimagesearchexample.repository.GiphyRepository
-import com.minhbka.giphyimagesearchexample.ui.GiphyViewModelFactory
-import com.minhbka.giphyimagesearchexample.ui.search.SearchPaginationViewModelFactory
+import com.minhbka.giphyimagesearchexample.ui.favorite.FavoriteViewModelFactory
+import com.minhbka.giphyimagesearchexample.ui.search.SearchViewModelFactory
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -22,8 +22,12 @@ class MyApplication : Application(), KodeinAware{
         bind() from singleton { GiphyApi(instance()) }
         bind() from singleton { AppDatabase(instance()) }
         bind() from singleton { GiphyRepository(instance(), instance()) }
-        bind() from provider { GiphyViewModelFactory(instance()) }
+        bind() from provider {
+            FavoriteViewModelFactory(
+                instance()
+            )
+        }
 
-        bind() from provider { SearchPaginationViewModelFactory(instance()) }
+        bind() from provider { SearchViewModelFactory(instance()) }
     }
 }

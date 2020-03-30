@@ -18,12 +18,11 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
 
-class FavoriteFragment : Fragment(), GiphyListener,
-    RecycleViewClickListener, KodeinAware {
+class FavoriteFragment : Fragment(), RecycleViewClickListener, KodeinAware {
 
     override val kodein by kodein()
-    private val factory : GiphyViewModelFactory by instance()
-    private lateinit var viewModel: GiphyViewModel
+    private val factory : FavoriteViewModelFactory by instance()
+    private lateinit var viewModel: FavoriteViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,9 +33,8 @@ class FavoriteFragment : Fragment(), GiphyListener,
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, factory).get(GiphyViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, factory).get(FavoriteViewModel::class.java)
 
-        viewModel.giphyListener = this
         viewModel.getFavorImage()
         val adapter = GiphyImagesAdapter(this)
         recycle_view_images.also {
@@ -54,22 +52,6 @@ class FavoriteFragment : Fragment(), GiphyListener,
 
     }
 
-    override fun onStarted() {
-        progress_bar.show()
-        activity!!.toast("Start Loading")
-    }
-
-    override fun onSuccess() {
-        progress_bar.hide()
-        activity!!.toast("Success Loading")
-
-    }
-
-    override fun onFailure(message: String) {
-        progress_bar.hide()
-        root_layout.snackbar(message)
-
-    }
     override fun onRecyclerViewItemClick(view: View, image: GiphyImage) {
         when(view.id){
             R.id.imageViewFavor ->{

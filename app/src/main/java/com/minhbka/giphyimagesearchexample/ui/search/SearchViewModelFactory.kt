@@ -9,10 +9,10 @@ import kotlinx.coroutines.FlowPreview
 @ExperimentalCoroutinesApi
 @FlowPreview
 @Suppress("UNCHECKED_CAST")
-class SearchPaginationViewModelFactory (
+class SearchViewModelFactory (
     private val repository: GiphyRepository
 ):ViewModelProvider.NewInstanceFactory(){
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return SearchPaginationViewModel(repository) as T
+        return SearchViewModel(repository) as T
     }
 }

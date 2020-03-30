@@ -3,15 +3,13 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/main_nav"
-            app:startDestination="@id/searchPaginationFragment">
+            app:startDestination="@id/searchFragment">
 
     <fragment android:id="@+id/searchFragment"
               android:name="com.minhbka.giphyimagesearchexample.ui.search.SearchFragment"
               android:label="Search"
               tools:layout="@layout/fragment_search"/>
-    <fragment android:id="@+id/searchPaginationFragment"
-              android:name="com.minhbka.giphyimagesearchexample.ui.search.SearchPaginationFragment"
-              android:label="Search" tools:layout="@layout/search_pagination_fragment"/>
+
     <fragment android:id="@+id/favoriteFragment"
               android:name="com.minhbka.giphyimagesearchexample.ui.favorite.FavoriteFragment"
               android:label="Favorite"

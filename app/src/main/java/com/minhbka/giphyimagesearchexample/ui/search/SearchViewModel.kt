@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.onEach
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class SearchPaginationViewModel(
+class SearchViewModel(
         private val repository: GiphyRepository
     ) : ViewModel() {
 
