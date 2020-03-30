@@ -30,22 +30,17 @@
                     android:layout_height="195dp"
 
                 />
-                <View
-                        android:background="@drawable/gradient_background"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"/>
+
                 <ImageView
                         app:selected="@{image.is_favourite}"
-                        android:padding="10dp"
-                        android:layout_margin="15dp"
+                        android:padding="15dp"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentEnd="true"
                         android:id="@+id/imageViewFavor"
-                        android:background="@drawable/img_favor_state"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:src="@drawable/img_favor_state"
+                        android:background="@drawable/gradient_background"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
             </RelativeLayout>
 
         </LinearLayout>

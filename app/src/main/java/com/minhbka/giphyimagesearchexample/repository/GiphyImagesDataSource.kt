@@ -5,8 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
-import com.minhbka.giphyimagesearchexample.utils.ApiException
-import com.minhbka.giphyimagesearchexample.utils.NoInternetException
+import com.minhbka.giphyimagesearchexample.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -20,8 +19,8 @@ class GiphyImagesDataSource(
 
 ):PageKeyedDataSource<Int, GiphyImage>(){
 
-    private val _progressLiveStatus = MutableLiveData<String>()
-    val progressLiveStatus : LiveData<String>
+    private val _progressLiveStatus = MutableLiveData<LoadingStatus>()
+    val progressLiveStatus : LiveData<LoadingStatus>
         get() = _progressLiveStatus
 
     private val job = Job()
@@ -30,22 +29,28 @@ class GiphyImagesDataSource(
         (scope + job).launch {
             try {
 
+                _progressLiveStatus.postValue(LoadingStatus(LOADING, "Loading..."))
                 val response = repository.getSearchGiphyImage(query = query, limit = params.requestedLoadSize, offset = 0)
-
-                val data = response.data
-                val searchResult = data.map {
-                    GiphyImage(it.id, it.images.original.url, repository.getFavorGiphyImageById(it.id) != null)
+                if (response.meta.status == STATUS_OK_CODE){
+                    val data = response.data
+                    val searchResult = data.map {
+                        GiphyImage(it.id, it.images.original.url, repository.getFavorGiphyImageById(it.id) != null)
+                    }
+                    callback.onResult(searchResult, null, response.pagination.offset+params.requestedLoadSize)
+                    _progressLiveStatus.postValue(LoadingStatus(SUCCESS, "Successfully Loaded") )
                 }
-                callback.onResult(searchResult, null, response.pagination.offset+params.requestedLoadSize)
+                else{
+                    _progressLiveStatus.postValue(LoadingStatus(FAILURE, response.meta.msg) )
+                }
             }
             catch (e: ApiException){
-                _progressLiveStatus.postValue(e.message)
+                _progressLiveStatus.postValue(LoadingStatus(FAILURE, e.message!!) )
                 Log.d("DEBUG", "loadInitial Exception: ${e.message}")
 
             }
             catch (e: NoInternetException){
                 Log.d("DEBUG", "loadInitial Exception: ${e.message}")
-                _progressLiveStatus.postValue(e.message)
+                _progressLiveStatus.postValue(LoadingStatus(FAILURE, e.message!!) )
             }
 
         }
@@ -54,29 +59,34 @@ class GiphyImagesDataSource(
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, GiphyImage>) {
         (scope + job).launch {
             try {
-
+                _progressLiveStatus.postValue(LoadingStatus(LOADING, "Loading..."))
                 val response =
                     repository.getSearchGiphyImage(query = query, limit = params.requestedLoadSize, offset = params.key)
 
-
-                val data = response.data
-                val searchResult = data.map {
-                    GiphyImage(
-                        it.id,
-                        it.images.original.url,
-                        repository.getFavorGiphyImageById(it.id) != null
-                    )
+                if (response.meta.status == STATUS_OK_CODE) {
+                    val data = response.data
+                    val searchResult = data.map {
+                        GiphyImage(
+                            it.id,
+                            it.images.original.url,
+                            repository.getFavorGiphyImageById(it.id) != null
+                        )
+                    }
+                    callback.onResult(searchResult, response.pagination.offset + params.requestedLoadSize)
+                    _progressLiveStatus.postValue(LoadingStatus(SUCCESS, "Successfully Loaded") )
                 }
-                callback.onResult(searchResult, response.pagination.offset+params.requestedLoadSize)
+                else{
+                    _progressLiveStatus.postValue(LoadingStatus(FAILURE, response.meta.msg) )
+                }
             }
             catch (e: ApiException){
                 Log.d("DEBUG", "loadAfter Exception: ${e.message}")
-                _progressLiveStatus.postValue(e.message)
+                _progressLiveStatus.postValue(LoadingStatus(FAILURE, e.message!!) )
 
             }
             catch (e: NoInternetException){
                 Log.d("DEBUG", "loadAfter Exception: ${e.message}")
-                _progressLiveStatus.postValue(e.message)
+                _progressLiveStatus.postValue(LoadingStatus(FAILURE, e.message!!) )
             }
         }
 

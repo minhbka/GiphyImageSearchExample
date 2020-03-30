@@ -10,6 +10,7 @@ import androidx.paging.PagedList
 import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
 import com.minhbka.giphyimagesearchexample.repository.GiphyImagesDataSource
 import com.minhbka.giphyimagesearchexample.repository.GiphyRepository
+import com.minhbka.giphyimagesearchexample.utils.LoadingStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +28,7 @@ class SearchPaginationViewModel(
         private val repository: GiphyRepository
     ) : ViewModel() {
 
-    private var progressLoadStatus : LiveData<String>
+    private var progressLoadStatus : LiveData<LoadingStatus>
     private val mutableLiveData = MutableLiveData<GiphyImagesDataSource>()
 
     private var giphyImagesLiveData  = initialGiphySearchListLiveData()
@@ -70,7 +71,7 @@ class SearchPaginationViewModel(
         return LivePagedListBuilder(dataSource, config).build()
     }
 
-    fun getProgressLoadStatus():LiveData<String>{
+    fun getProgressLoadStatus():LiveData<LoadingStatus>{
         return progressLoadStatus
     }
 

@@ -9,9 +9,10 @@ import com.minhbka.giphyimagesearchexample.repository.GiphyRepository
 import com.minhbka.giphyimagesearchexample.utils.ApiException
 import com.minhbka.giphyimagesearchexample.utils.Coroutines
 import com.minhbka.giphyimagesearchexample.utils.NoInternetException
+import com.minhbka.giphyimagesearchexample.utils.STATUS_OK_CODE
 import kotlinx.coroutines.Job
 
-const val  STATUS_OK_CODE = 200
+
 class GiphyViewModel(
     private val repository: GiphyRepository
 ):ViewModel() {
