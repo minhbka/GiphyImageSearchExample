@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import com.minhbka.giphyimagesearchexample.databinding.FragmentSearchBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -31,29 +33,45 @@ class SearchFragment : Fragment(), RecycleViewClickListener, KodeinAware {
 
     override val kodein by kodein()
     private val factory : SearchViewModelFactory by instance()
-
-
+    private lateinit var adapter: GiphyImagesPagedListAdapter
     private lateinit var viewModel: SearchViewModel
+    private lateinit var last_search_keyword:String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        val binding : FragmentSearchBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container,false)
+        if (!::viewModel.isInitialized) {
+            viewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
+            binding.searchviewmodel = viewModel
+            binding.lifecycleOwner = this
+        }
+
+        return binding.root
     }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val adapter = GiphyImagesPagedListAdapter(this)
+        Log.d("DEBUG", "On onActivityCreated")
+        adapter = GiphyImagesPagedListAdapter(this)
         recycle_view_images.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.setHasFixedSize(true)
             it.adapter = adapter
         }
-        viewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
-        viewModel.queryChannel.offer("cherry blossom")
-        viewModel.getGiphyImagesLiveData()
-        viewModel.getProgressLoadStatus()
+        if (savedInstanceState != null){
+            last_search_keyword = savedInstanceState.getString(LAST_SEARCH_KEYWORD)!!
+            viewModel.queryChannel.offer(last_search_keyword)
+        }
+        else {
+            viewModel.queryChannel.offer("cherry blossom")
+
+        }
+//        viewModel.getGiphyImagesLiveData()
+//        viewModel.getProgressLoadStatus()
+
         viewModel.getGiphyImagesLiveData().observe(this, Observer {
             it?.let {
                 adapter.submitList(it)
@@ -96,5 +114,14 @@ class SearchFragment : Fragment(), RecycleViewClickListener, KodeinAware {
         }
     }
 
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        if (::adapter.isInitialized){
+            Log.d("DEBUG", "On SaveInstanceState")
+            outState.putString(LAST_SEARCH_KEYWORD, viewModel.queryChannel.valueOrNull.orEmpty())
+        }
+    }
 
 }
