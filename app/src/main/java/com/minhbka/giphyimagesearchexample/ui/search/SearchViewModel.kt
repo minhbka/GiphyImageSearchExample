@@ -11,6 +11,7 @@ import androidx.paging.PagedList
 import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
 import com.minhbka.giphyimagesearchexample.repository.GiphyImagesDataSource
 import com.minhbka.giphyimagesearchexample.repository.GiphyRepository
+import com.minhbka.giphyimagesearchexample.utils.DEFAULT_SEARCH_KEYWORD
 import com.minhbka.giphyimagesearchexample.utils.LoadingStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -59,7 +60,7 @@ class SearchViewModel(
             override fun create(): GiphyImagesDataSource {
                 return GiphyImagesDataSource(
                     repository = repository,
-                    query = queryChannel.valueOrNull.orEmpty(),
+                    query = queryChannel.valueOrNull ?: DEFAULT_SEARCH_KEYWORD,
                     scope = CoroutineScope(Dispatchers.IO)
                 ).also {
                     giphyImagesDataSource = it
@@ -85,7 +86,7 @@ class SearchViewModel(
     fun onSearchButtonClick(view: View){
         if (keyword.isNullOrEmpty())
             return
-        //_currentKeyword.postValue(keyword)
+        _currentKeyword.postValue(keyword)
         queryChannel.offer(keyword!!)
     }
 

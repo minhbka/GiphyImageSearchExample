@@ -37,15 +37,21 @@ class SearchFragment : Fragment(), RecycleViewClickListener, KodeinAware {
     private lateinit var viewModel: SearchViewModel
     private lateinit var last_search_keyword:String
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("DEBUG", "On onCreate")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val binding : FragmentSearchBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container,false)
         if (!::viewModel.isInitialized) {
+
             viewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
             binding.searchviewmodel = viewModel
-            binding.lifecycleOwner = this
+            binding.lifecycleOwner = viewLifecycleOwner
         }
 
         return binding.root
@@ -65,26 +71,25 @@ class SearchFragment : Fragment(), RecycleViewClickListener, KodeinAware {
             last_search_keyword = savedInstanceState.getString(LAST_SEARCH_KEYWORD)!!
             viewModel.queryChannel.offer(last_search_keyword)
         }
-        else {
-            viewModel.queryChannel.offer("cherry blossom")
 
-        }
-//        viewModel.getGiphyImagesLiveData()
-//        viewModel.getProgressLoadStatus()
-
-        viewModel.getGiphyImagesLiveData().observe(this, Observer {
+        viewModel.getGiphyImagesLiveData().observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
             }
 
         })
 
-        viewModel.getProgressLoadStatus().observe(this, Observer {
+        viewModel.getProgressLoadStatus().observe(viewLifecycleOwner, Observer {
             it?.let {
                 Log.d("DEBUG", "On Loading Status changed")
                 handleLoadingStatus(it)
             }
 
+        })
+        viewModel.getKeyword().observe(viewLifecycleOwner, Observer {
+            it?.let {
+                Log.d("DEBUG", "keyword: $it")
+            }
         })
     }
     override fun onRecyclerViewItemClick(view: View, image: GiphyImage) {
