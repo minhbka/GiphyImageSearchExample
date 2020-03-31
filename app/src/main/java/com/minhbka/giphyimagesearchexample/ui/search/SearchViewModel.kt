@@ -1,6 +1,5 @@
 package com.minhbka.giphyimagesearchexample.ui.search
 
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -30,7 +29,7 @@ class SearchViewModel(
         private val repository: GiphyRepository
     ) : ViewModel() {
 
-    var keyword:String? = null
+
     private val _currentKeyword = MutableLiveData<String>()
     private var progressLoadStatus : LiveData<LoadingStatus>
     private val mutableLiveData = MutableLiveData<GiphyImagesDataSource>()
@@ -83,11 +82,11 @@ class SearchViewModel(
         return giphyImagesLiveData
     }
 
-    fun onSearchButtonClick(view: View){
+    fun onSearchButtonClick(keyword:String?){
         if (keyword.isNullOrEmpty())
             return
-        _currentKeyword.postValue(keyword)
-        queryChannel.offer(keyword!!)
+
+        queryChannel.offer(keyword)
     }
 
     fun onFavoriteButtonClick(image:GiphyImage){

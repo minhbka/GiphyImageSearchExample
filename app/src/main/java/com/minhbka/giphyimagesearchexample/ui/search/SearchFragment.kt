@@ -1,20 +1,20 @@
 package com.minhbka.giphyimagesearchexample.ui.search
 
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import com.minhbka.giphyimagesearchexample.databinding.FragmentSearchBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minhbka.giphyimagesearchexample.R
 import com.minhbka.giphyimagesearchexample.data.entities.GiphyImage
-import com.minhbka.giphyimagesearchexample.ui.*
+import com.minhbka.giphyimagesearchexample.ui.RecycleViewClickListener
 import com.minhbka.giphyimagesearchexample.utils.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,27 +35,21 @@ class SearchFragment : Fragment(), RecycleViewClickListener, KodeinAware {
     private val factory : SearchViewModelFactory by instance()
     private lateinit var adapter: GiphyImagesPagedListAdapter
     private lateinit var viewModel: SearchViewModel
-    private lateinit var last_search_keyword:String
+    private var lastSearchKeyword : String? = null
+    private var sharedPreferences: SharedPreferences?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("DEBUG", "On onCreate")
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding : FragmentSearchBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container,false)
-        if (!::viewModel.isInitialized) {
+        return inflater.inflate(R.layout.fragment_search, container, false)
 
-            viewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
-            binding.searchviewmodel = viewModel
-            binding.lifecycleOwner = viewLifecycleOwner
-        }
-
-        return binding.root
     }
+
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -67,9 +61,11 @@ class SearchFragment : Fragment(), RecycleViewClickListener, KodeinAware {
             it.setHasFixedSize(true)
             it.adapter = adapter
         }
+        viewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
+
         if (savedInstanceState != null){
-            last_search_keyword = savedInstanceState.getString(LAST_SEARCH_KEYWORD)!!
-            viewModel.queryChannel.offer(last_search_keyword)
+            lastSearchKeyword = savedInstanceState.getString(LAST_SEARCH_KEYWORD)!!
+            viewModel.queryChannel.offer(lastSearchKeyword!!)
         }
 
         viewModel.getGiphyImagesLiveData().observe(viewLifecycleOwner, Observer {
@@ -92,6 +88,35 @@ class SearchFragment : Fragment(), RecycleViewClickListener, KodeinAware {
             }
         })
     }
+
+    override fun onStart() {
+        super.onStart()
+
+        sharedPreferences = activity?.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE)
+        lastSearchKeyword = sharedPreferences?.getString(LAST_SEARCH_KEYWORD, DEFAULT_SEARCH_KEYWORD)
+        lastSearchKeyword?.let {
+            viewModel.queryChannel.offer(it)
+            search_box.setText(it)
+        }
+
+
+        search_btn.setOnClickListener {
+            Log.d("DEBUG", "Search Clicked")
+
+            search_btn.hideKeyboard()
+            val keyword = search_box.text?.toString()
+            keyword?.let {
+                viewModel.onSearchButtonClick(it)
+                val editor = sharedPreferences?.edit()
+                editor?.putString(LAST_SEARCH_KEYWORD, it)
+                editor?.apply()
+                editor?.commit()
+            }
+
+        }
+
+    }
+
     override fun onRecyclerViewItemClick(view: View, image: GiphyImage) {
         when(view.id){
             R.id.imageViewFavor ->{
